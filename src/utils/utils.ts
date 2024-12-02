@@ -44,7 +44,7 @@ export const cypherStr = (str: string, offset: number) => {
   return newStr
 }
 
-export const createHashmap = (list: (string | number)[]): Record<string | number, number> => {
+export const createHashmap = <T extends string | number>(list: T[]): Record<T, number> => {
   const hash: Record<string | number, number> = {}
   for (const item of list) {
     if (hash[item]) hash[item]++
