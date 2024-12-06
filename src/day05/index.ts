@@ -39,70 +39,71 @@ const part1 = (rawInput: string) => {
         break
       }
     }
+
     if (good) sum += middle
   }
   return sum
 }
 
 const part2 = (rawInput: string) => {
-  const { rulesHash, tests } = parseInput(rawInput)
+  const { tests, rulesHash } = parseInput(rawInput)
+  console.log(rulesHash)
   let sum = 0
-  for (const testNums of tests) {
-    // fix this sort line
-    testNums.sort((a, b) => (rulesHash[a].after.has(b) ? 1 : -1))
-
-    sum += testNums[Math.floor(testNums.length / 2)]
+  const badNums = tests.filter(test => !isValid(test))
+  for (const original of badNums) {
+    const nums = original.toSorted((a, b) => (rulesHash[a].before.has(b) ? 1 : -1))
+    sum += nums[Math.floor(nums.length / 2)]
   }
-
   return sum
-}
 
-// function isLegal(nums: number[]): boolean {
-//   for (let i = 0; i < nums.length; i++) {
-//     const current = nums[i]
-//     const others = new Set(nums.slice(i + 1))
-//     const baddies = others.intersection(rulesHash[current].before)
-//     if (baddies.size > 0) return false
-//   }
-//   return true
-// }
+  function isValid(nums: number[]) {
+    for (let i = 0; i < nums.length; i++) {
+      const current = nums[i]
+      const others = new Set(nums.slice(i + 1))
+      const baddies = others.intersection(rulesHash[current].before)
+      if (baddies.size > 0) {
+        return false
+      }
+    }
+    return true
+  }
+}
 
 run({
   part1: {
     tests: [
-      {
-        input: `
-47|53
-97|13
-97|61
-97|47
-75|29
-61|13
-75|53
-29|13
-97|29
-53|29
-61|53
-97|53
-61|29
-47|13
-75|47
-97|75
-47|61
-75|61
-47|29
-75|13
-53|13
-
-75,47,61,53,29
-97,61,53,29,13
-75,29,13
-75,97,47,61,53
-61,13,29
-97,13,75,29,47
-        `,
-        expected: 143,
-      },
+      //       {
+      //         input: `
+      // 47|53
+      // 97|13
+      // 97|61
+      // 97|47
+      // 75|29
+      // 61|13
+      // 75|53
+      // 29|13
+      // 97|29
+      // 53|29
+      // 61|53
+      // 97|53
+      // 61|29
+      // 47|13
+      // 75|47
+      // 97|75
+      // 47|61
+      // 75|61
+      // 47|29
+      // 75|13
+      // 53|13
+      // 75,47,61,53,29
+      // 97,61,53,29,13
+      // 75,29,13
+      // 75,97,47,61,53
+      // 61,13,29
+      // 97,13,75,29,47
+      //         `,
+      //         expected: 143,
+      //       },
     ],
     solution: part1,
   },
