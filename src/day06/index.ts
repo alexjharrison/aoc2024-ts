@@ -47,7 +47,81 @@ const part1 = (rawInput: string) => {
 
 const part2 = (rawInput: string) => {
   const grid = parseInput(rawInput)
-  return 0
+  let direction = "^"
+  let count = 0
+  for (const togglePt of grid.pointsList()) {
+    if (togglePt.val !== ".") continue
+    togglePt.val = "#"
+
+    let currLocation: Point<string> | null = grid.pointsList().find(pt => pt.val === direction) || null
+    if (!currLocation) throw new Error()
+    while (currLocation !== null) {
+      let points = new Set<string>()
+      if (direction === "^") {
+        const nextLocation = grid.getAbove(currLocation)
+        if (nextLocation?.val === "#") {
+          direction = ">"
+          if (nextLocation) {
+            const locStr = `${nextLocation.x}-${nextLocation?.y}-${direction}`
+            if (points.has(locStr)) {
+              count++
+              currLocation = null
+            }
+            points.add(locStr)
+          }
+        } else {
+          currLocation = nextLocation
+        }
+      } else if (direction === ">") {
+        const nextLocation = grid.getRight(currLocation)
+        if (nextLocation?.val === "#") {
+          direction = "v"
+          if (nextLocation) {
+            const locStr = `${nextLocation.x}-${nextLocation?.y}-${direction}`
+            if (points.has(locStr)) {
+              count++
+              currLocation = null
+            }
+            points.add(locStr)
+          }
+        } else {
+          currLocation = nextLocation
+        }
+      } else if (direction === "v") {
+        const nextLocation = grid.getBelow(currLocation)
+        if (nextLocation?.val === "#") {
+          direction = "<"
+          if (nextLocation) {
+            const locStr = `${nextLocation.x}-${nextLocation?.y}-${direction}`
+            if (points.has(locStr)) {
+              count++
+              currLocation = null
+            }
+            points.add(locStr)
+          }
+        } else {
+          currLocation = nextLocation
+        }
+      } else if (direction === "<") {
+        const nextLocation = grid.getLeft(currLocation)
+        if (nextLocation?.val === "#") {
+          direction = "^"
+          if (nextLocation) {
+            const locStr = `${nextLocation.x}-${nextLocation?.y}-${direction}`
+            if (points.has(locStr)) {
+              count++
+              currLocation = null
+            }
+            points.add(locStr)
+          }
+        } else {
+          currLocation = nextLocation
+        }
+      }
+    }
+    togglePt.val = "."
+  }
+  return count
 }
 
 run({
