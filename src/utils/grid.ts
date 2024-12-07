@@ -1,10 +1,5 @@
 export class Point<T> {
-  constructor(
-    public x: number,
-    public y: number,
-    public val: T,
-    public wasVisited = false,
-  ) {}
+  constructor(public x: number, public y: number, public val: T, public wasVisited = false) {}
   public coords = () => [this.y, this.x]
   public isNumber = () => {
     switch (typeof this.val) {
@@ -17,6 +12,7 @@ export class Point<T> {
     }
   }
   public isEmpty = () => this.val === "."
+  public endcodeId = (payload: string = "") => `${this.x}-${this.y}-${payload}`
 }
 
 export class Grid<TVal> {
@@ -24,9 +20,7 @@ export class Grid<TVal> {
   public height: number
   public width: number
   constructor(public lines: TVal[][]) {
-    this.points = lines.map((line, y) =>
-      line.map((val, x) => new Point(x, y, val)),
-    )
+    this.points = lines.map((line, y) => line.map((val, x) => new Point(x, y, val)))
 
     // self.points = [[Point(x, y, int(val) if val.isdigit() else val) for x, val in enumerate(line)]
     //for y, line in enumerate(lines)]
@@ -44,16 +38,16 @@ export class Grid<TVal> {
       console.log(line)
     }
   }
+  public decodeId = (id: string) => {
+    const [x, y, payload] = id.split("-")
+    return { point: this.getPoint(+x, +y), payload }
+  }
   public pointsList = () => this.points.flatMap(row => row)
   public getPoint = (x: number, y: number) => this.points[y][x]
-  public getLeft = (pt: Point<TVal>) =>
-    pt.x === 0 ? null : this.getPoint(pt.x - 1, pt.y)
-  public getRight = (pt: Point<TVal>) =>
-    pt.x === this.width - 1 ? null : this.getPoint(pt.x + 1, pt.y)
-  public getAbove = (pt: Point<TVal>) =>
-    pt.y === 0 ? null : this.getPoint(pt.x, pt.y - 1)
-  public getBelow = (pt: Point<TVal>) =>
-    pt.y === this.height - 1 ? null : this.getPoint(pt.x, pt.y + 1)
+  public getLeft = (pt: Point<TVal>) => (pt.x === 0 ? null : this.getPoint(pt.x - 1, pt.y))
+  public getRight = (pt: Point<TVal>) => (pt.x === this.width - 1 ? null : this.getPoint(pt.x + 1, pt.y))
+  public getAbove = (pt: Point<TVal>) => (pt.y === 0 ? null : this.getPoint(pt.x, pt.y - 1))
+  public getBelow = (pt: Point<TVal>) => (pt.y === this.height - 1 ? null : this.getPoint(pt.x, pt.y + 1))
   public getTopLeft = (pt: Point<TVal>) => {
     const above = this.getAbove(pt)
     const left = this.getLeft(pt)
