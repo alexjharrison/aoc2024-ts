@@ -58,7 +58,7 @@ const part1 = (rawInput: string) => {
 function getLegalAntiNodes(first: Point<string>, second: Point<string>, grid: Grid<string>): Set<Point<string>> {
   const set: Set<Point<string>> = new Set()
   const { height, width } = grid
-  let i = 1
+  let i = 0
   const dx = first.x - second.x
   const dy = first.y - second.y
   while (true) {
@@ -70,7 +70,7 @@ function getLegalAntiNodes(first: Point<string>, second: Point<string>, grid: Gr
     pt1.val = "~"
     i++
   }
-  i = 1
+  i = 0
   while (true) {
     const pt2x = second.x - dx * i
     const pt2y = second.y - dy * i
@@ -100,7 +100,6 @@ const part2 = (rawInput: string) => {
   const { grid, pts } = parseInput(rawInput)
   let set = new Set<Point<string>>()
   for (const points of Object.values(pts)) {
-    set = set.union(points)
     set = set.union(getRepeatingAntiNodes(points, grid))
   }
   // console.log(set)
