@@ -2,29 +2,33 @@ import run from "aocrunner"
 
 const parseInput = (rawInput: string) => rawInput
 
-type Block = {
-  id: number
-  fileSize: number
-  paddingSize: number
-}
 const part1 = (rawInput: string) => {
   const input = parseInput(rawInput)
-  const blocks: Block[] = []
+  let arr: string[] = []
+  let idx = 0
   for (let i = 0; i < input.length; i += 2) {
-    blocks.push({
-      id: i / 2,
-      fileSize: +input[i],
-      paddingSize: +(input[i + 1] || 0),
-    })
-  }
-  for (let i = 0; i < blocks.length; i++) {
-    for (let j = 0; j < blocks[i].paddingSize; j++) {
-      const thisBlock = blocks[i]
-      const lastBlock = blocks.at(-1)
+    arr = arr.concat(new Array(+input[i]).fill(idx++))
+    if (input[i + 1] !== undefined) {
+      arr = arr.concat(new Array(+input[i + 1]).fill("."))
     }
   }
-  console.log(blocks)
-  return
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === ".") {
+      for (let j = arr.length - 1; j > i; j--) {
+        if (arr[j] !== ".") {
+          arr[i] = arr[j]
+          arr[j] = "."
+          break
+        }
+      }
+    }
+  }
+  let sum = 0
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === ".") break
+    sum += i * +arr[i]
+  }
+  return sum
 }
 
 const part2 = (rawInput: string) => {
