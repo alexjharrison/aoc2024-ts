@@ -19,8 +19,19 @@ export class Grid<TVal> {
   public points: Point<TVal>[][]
   public height: number
   public width: number
+  public map: Map<TVal | string, Point<TVal>[]>
   constructor(public lines: TVal[][]) {
-    this.points = lines.map((line, y) => line.map((val, x) => new Point(x, y, val)))
+    this.map = new Map()
+    this.points = lines.map((line, y) =>
+      line.map((val, x) => {
+        const pt = new Point(x, y, val)
+        const pts = this.map.get(val)
+        const payload = typeof val === "object" ? JSON.stringify(val) : val
+        if (pts) pts.push(pt)
+        else this.map.set(payload, [pt])
+        return pt
+      }),
+    )
 
     // self.points = [[Point(x, y, int(val) if val.isdigit() else val) for x, val in enumerate(line)]
     //for y, line in enumerate(lines)]
