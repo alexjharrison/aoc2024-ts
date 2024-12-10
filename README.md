@@ -125,9 +125,9 @@ Both parts: 3.556ms
 
 ```
 Day 09
-Time part 1: 4778.774ms
-Time part 2: -
-Both parts: 4778.774ms
+Time part 1: 3388.308ms
+Time part 2: 77.311ms
+Both parts: 3465.619ms
 ```
 
 ```
